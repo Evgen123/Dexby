@@ -7,6 +7,7 @@
     <PackageJsonScriptsTest Condition="$(PackageJsonScriptsTest) == ''">echo "Error: no test specified" &amp;&amp; exit 1</PackageJsonScriptsTest>
     <PackageJsonScriptsBuild Condition="$(PackageJsonScriptsBuild) == ''">tsc --build</PackageJsonScriptsBuild>
     <PackageJsonScriptsClean Condition="$(PackageJsonScriptsClean) == ''">tsc --build --clean</PackageJsonScriptsClean>
+    <PackageJsonScriptsStart Condition="$(PackageJsonScriptsStart) == ''">node bot.js</PackageJsonScriptsStart>
     <PackageJsonKeywords Condition="$(PackageJsonKeywords) == ''">[]</PackageJsonKeywords>
     <PackageJsonAuthor Condition="$(PackageJsonAuthor) == ''"></PackageJsonAuthor>
     <PackageJsonLicense Condition="$(PackageJsonLicense) == ''">ISC</PackageJsonLicense>
