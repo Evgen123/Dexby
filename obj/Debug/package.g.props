@@ -18,6 +18,7 @@
     <PackageJsonDependenciesAcorn Condition="$(PackageJsonDependenciesAcorn) == ''">^8.14.0</PackageJsonDependenciesAcorn>
     <PackageJsonDependenciesAcornJsx Condition="$(PackageJsonDependenciesAcornJsx) == ''">^5.3.2</PackageJsonDependenciesAcornJsx>
     <PackageJsonDependenciesAjv Condition="$(PackageJsonDependenciesAjv) == ''">^6.12.6</PackageJsonDependenciesAjv>
+    <PackageJsonDependenciesAlchemySdk Condition="$(PackageJsonDependenciesAlchemySdk) == ''">^3.5.3</PackageJsonDependenciesAlchemySdk>
     <PackageJsonDependenciesAnsiStyles Condition="$(PackageJsonDependenciesAnsiStyles) == ''">^4.3.0</PackageJsonDependenciesAnsiStyles>
     <PackageJsonDependenciesArgparse Condition="$(PackageJsonDependenciesArgparse) == ''">^2.0.1</PackageJsonDependenciesArgparse>
     <PackageJsonDependenciesAxios Condition="$(PackageJsonDependenciesAxios) == ''">^1.8.0</PackageJsonDependenciesAxios>
@@ -88,5 +89,6 @@
     <PackageJsonDependenciesWordWrap Condition="$(PackageJsonDependenciesWordWrap) == ''">^1.2.5</PackageJsonDependenciesWordWrap>
     <PackageJsonDependenciesYoctoQueue Condition="$(PackageJsonDependenciesYoctoQueue) == ''">^0.1.0</PackageJsonDependenciesYoctoQueue>
     <PackageJsonDescription Condition="$(PackageJsonDescription) == ''"></PackageJsonDescription>
+    <PackageJsonType Condition="$(PackageJsonType) == ''">module</PackageJsonType>
   </PropertyGroup>
 </Project>

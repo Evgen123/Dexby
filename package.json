@@ -21,6 +21,7 @@
     "acorn": "^8.14.0",
     "acorn-jsx": "^5.3.2",
     "ajv": "^6.12.6",
+    "alchemy-sdk": "^3.5.3",
     "ansi-styles": "^4.3.0",
     "argparse": "^2.0.1",
     "axios": "^1.8.0",
@@ -91,5 +92,6 @@
     "word-wrap": "^1.2.5",
     "yocto-queue": "^0.1.0"
   },
-  "description": ""
+  "description": "",
+  "type": "module"
 }
