@@ -47,8 +47,11 @@ bot.on('text', async (ctx) => {
             // Получаем последнюю транзакцию покупки через Alchemy
             // lastTransaction = await getLastTokenTransaction2(tokenAddress);
             
-            if (!lastTransaction) {
-                return ctx.reply("No purchase transactions found for this token.");
+            if (lastTransaction == 0) {
+                return ctx.reply("No purchase transactions found for this token.");              
+            }
+            else if (!lastTransaction) {
+                return ctx.reply("Server responded with 429 Too Many Requests.");
             }
         }
 
@@ -126,33 +129,40 @@ async function getLastTokenTransaction(tokenAddress) {
 
             if (txDetails && txDetails.meta && txDetails.meta.postTokenBalances) {
                 var secondToken = ""
+                var slot = 0
+                var wallet = ""
+                var amount = 0
+                var signature = ""
 
                 for (let i = 0; i < txDetails.meta.postTokenBalances.length; i++) {
+
                     const balance = txDetails.meta.postTokenBalances[i];
                     const preBalance = txDetails.meta.preTokenBalances?.[i];
-                    if (balance.mint != tokenAddress) {
+                    if (balance.mint !== tokenAddress) {
                         secondToken = balance.mint
                     }
-                    var slot = 0
-                    var wallet = ""
-                    var amount = 0
-                    var signature = ""
+                    
                     // Ищем покупку токена — это когда баланс увеличивается у получателя токена
                     if (
                         balance.mint === tokenAddress && // Проверяем, что это нужный токен
                         preBalance &&
                         balance.uiTokenAmount.uiAmount > preBalance.uiTokenAmount.uiAmount && // Увеличение баланса
-                        balance.owner === walletTransact  // получатель - кошелек породивший транзакцию
+                        balance.owner === walletTransact &&   // получатель - кошелек породивший транзакцию
+                        amount <= 0
                     ) {
                         // Сохраняем информацию о последней покупке токена
                         amount = balance.uiTokenAmount.uiAmount - preBalance.uiTokenAmount.uiAmount;
                         wallet = balance.owner || 'Неизвестный кошелек';
-
                         slot = txDetails.slot
                         signature = txInfo.signature
                     }
+
+                    if (secondToken !== "" && amount > 0) {  // все что нужно найдено
+                        break;
+                    }
+                    await delay(1000); // Ждём 1 секунду
                 }
-                if (secondToken != "" && slot && wallet && signature) {
+                if (secondToken !== "" && slot && wallet && signature) {
                     // Возвращаем информацию о последней покупке токена
                     return {
                         slot,
@@ -164,10 +174,10 @@ async function getLastTokenTransaction(tokenAddress) {
             }
         }
 
-        return null; // Если покупок не найдено
+        return 0; // Если покупок не найдено
     } catch (error) {
         console.error("Ошибка получения транзакции:", error);
-        return null;
+        return null;  // Если ошибка, например Too Many Requests
     }
 }
 
