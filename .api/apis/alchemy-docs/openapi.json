@@ -1,0 +1,361 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Get transaction",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{network}.g.alchemy.com/v2/",
+      "variables": {
+        "network": {
+          "enum": [
+            "solana-mainnet",
+            "solana-devnet"
+          ],
+          "default": "solana-mainnet"
+        }
+      }
+    }
+  ],
+  "x-sandbox": {
+    "category": {
+      "type": {
+        "name": "category",
+        "type": "string",
+        "enum": [
+          "core",
+          "bundler",
+          "nft",
+          "token",
+          "transfers",
+          "transaction-receipts",
+          "gas-manager",
+          "trace",
+          "debug",
+          "gas-optimized-transactions",
+          "private-transactions",
+          "notify",
+          "transaction-simulation"
+        ]
+      },
+      "value": "core"
+    }
+  },
+  "paths": {
+    "/{apiKey}": {
+      "post": {
+        "summary": "getTransaction",
+        "description": "Returns transaction details for a confirmed transaction.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "apiKey",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "default": "docs-demo",
+              "description": "<style>\n  .custom-style {\n    color: #048FF4;\n  }\n</style>\nFor higher throughput, <span class=\"custom-style\"><a href=\"https://alchemy.com/?a=docs-demo\" target=\"_blank\">create your own API key</a></span>\n"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "default": 1
+                      },
+                      "jsonrpc": {
+                        "type": "string",
+                        "default": "2.0"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "method": {
+                        "default": "getTransaction",
+                        "type": "string"
+                      },
+                      "params": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "description": "Returns transaction details for a confirmed transaction."
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "encoding": {
+                                  "type": "string",
+                                  "description": "Data encoding for each returned transaction.\nAccepts one of the following strings:\n[\"json\" (Default), \"jsonParsed\", \"base58\" (slow), \"base64\"]\n\"jsonParsed\" encoding attempts to use program-specific parsers to make the transaction.message.instructions list more human-readable; if a parser cannot be found, the instruction falls back to default JSON.\n",
+                                  "default": "json",
+                                  "enum": [
+                                    "json",
+                                    "jsonParsed",
+                                    "base58",
+                                    "base64"
+                                  ]
+                                },
+                                "commitment": {
+                                  "type": "string",
+                                  "default": "processed",
+                                  "description": "Configures the commitment level of the blocks queried.\nAccepts one of the following strings: [\"finalized\", \"confirmed\", \"processed\"]\n",
+                                  "enum": [
+                                    "finalized",
+                                    "confirmed",
+                                    "processed"
+                                  ]
+                                },
+                                "maxSupportedTransactionVersion": {
+                                  "type": "number",
+                                  "description": "Set the max transaction version to return in responses. If the requested transaction is a higher version, an error will be returned."
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "prefixItems": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "description": "Returns transaction details for a confirmed transaction."
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "encoding": {
+                                  "type": "string",
+                                  "description": "Data encoding for each returned transaction.\nAccepts one of the following strings:\n[\"json\" (Default), \"jsonParsed\", \"base58\" (slow), \"base64\"]\n\"jsonParsed\" encoding attempts to use program-specific parsers to make the transaction.message.instructions list more human-readable; if a parser cannot be found, the instruction falls back to default JSON.\n",
+                                  "default": "json",
+                                  "enum": [
+                                    "json",
+                                    "jsonParsed",
+                                    "base58",
+                                    "base64"
+                                  ]
+                                },
+                                "commitment": {
+                                  "type": "string",
+                                  "default": "processed",
+                                  "description": "Configures the commitment level of the blocks queried.\nAccepts one of the following strings: [\"finalized\", \"confirmed\", \"processed\"]\n",
+                                  "enum": [
+                                    "finalized",
+                                    "confirmed",
+                                    "processed"
+                                  ]
+                                },
+                                "maxSupportedTransactionVersion": {
+                                  "type": "number",
+                                  "description": "Set the max transaction version to return in responses. If the requested transaction is a higher version, an error will be returned."
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "jsonrpc": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "slot": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "The slot this transaction was processed in."
+                            },
+                            "transaction": {
+                              "type": "object",
+                              "description": "Tx object, either in JSON format or encoded binary data, depending on encoding parameter."
+                            },
+                            "blockTime": {
+                              "type": "integer",
+                              "format": "int64",
+                              "nullable": true,
+                              "description": "Estimated production time, as Unix timestamp (seconds since the Unix epoch) of when the transaction was processed."
+                            },
+                            "meta": {
+                              "allOf": [
+                                {
+                                  "type": "object",
+                                  "description": "Transaction status metadata object.",
+                                  "properties": {
+                                    "err": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "description": "If transaction failed, error messaage. If transaction succeeded null."
+                                    },
+                                    "fee": {
+                                      "type": "integer",
+                                      "description": "u64 - Fee for this transaction."
+                                    },
+                                    "preBalances": {
+                                      "type": "array",
+                                      "description": "Array of u64s - Account balances from before the transaction was processed.",
+                                      "items": {
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "postBalances": {
+                                      "type": "array",
+                                      "description": "Array of u64s - Account balances after the transaction was processed."
+                                    },
+                                    "innerInstructions": {
+                                      "type": "array",
+                                      "nullable": true,
+                                      "description": "List of inner instructions. null if not enabled during this transaction",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "preTokenBalances": {
+                                      "type": "array",
+                                      "description": "List of token balances from before the transaction was processed or Undefined if token balance recording was not yet enabled during this transaction.",
+                                      "items": {
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "postTokenBalances": {
+                                      "type": "array",
+                                      "description": "List of token balances from after the transaction was processed. Undefined if token balance recording was not yet enabled during this transaction",
+                                      "items": {
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "logMessages": {
+                                      "type": "array",
+                                      "nullable": true,
+                                      "description": "Array of string log messages. null if log message recording was not enabled during this transaction.",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "loadedAddresses": {
+                                      "type": "array",
+                                      "description": "Transaction addresses loaded from address lookup tables. Undefined if maxSupportedTransactionVersion was not set in request params.",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "writable": {
+                                            "type": "array",
+                                            "description": "Array[String Base-58 Encoded Addresses] - Ordered list addresses for writable loaded accounts.",
+                                            "items": {
+                                              "type": "object"
+                                            }
+                                          },
+                                          "readonly": {
+                                            "type": "array",
+                                            "description": "Array[String Base-58 Encoded Addresses] - Ordered list addresses for read only loaded accounts.",
+                                            "items": {
+                                              "type": "object"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "rewards": {
+                                      "type": "array",
+                                      "description": "Array of object - Object present if rewards are requested.",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "pubkey": {
+                                            "type": "string",
+                                            "description": "Base-58 Encoded String - The public key of the account that received the reward."
+                                          },
+                                          "lamports": {
+                                            "type": "integer",
+                                            "description": "i64- Number of reward lamports credited or debited by the account, as a i64."
+                                          },
+                                          "postBalance": {
+                                            "type": "integer",
+                                            "description": "u64 - Account balance in lamports after the reward was applied."
+                                          },
+                                          "rewardType": {
+                                            "type": "string",
+                                            "description": "Type of reward - [\"fee\", \"rent\", \"voting\", \"staking\"].",
+                                            "enum": [
+                                              "fee",
+                                              "rent",
+                                              "voting",
+                                              "staking"
+                                            ]
+                                          },
+                                          "commission": {
+                                            "type": "integer",
+                                            "description": "Vote account commission when the reward was credited, only present for voting and staking rewards."
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "version": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "Transaction version. Undefined if maxSupportedTransactionVersion is not set in request params."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getTransaction",
+        "x-readme": {
+          "explorer-enabled": false
+        }
+      }
+    }
+  }
+}

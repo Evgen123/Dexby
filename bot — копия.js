@@ -45,10 +45,13 @@ bot.on('text', async (ctx) => {
 
         if (!lastTransaction) {
             // Получаем последнюю транзакцию покупки через Alchemy
-            lastTransaction = await getLastTokenTransaction2(tokenAddress);
+            // lastTransaction = await getLastTokenTransaction2(tokenAddress);
             
-            if (!lastTransaction) {
-                return ctx.reply("No purchase transactions found for this token.");
+            if (lastTransaction == 0) {
+                return ctx.reply("No purchase transactions found for this token.");              
+            }
+            else if (!lastTransaction) {
+                return ctx.reply("Server responded with 429 Too Many Requests.");
             }
         }
 
@@ -125,73 +128,59 @@ async function getLastTokenTransaction(tokenAddress) {
             // console.log("🔍 Полные детали транзакции:", JSON.stringify(txDetails, null, 2));
 
             if (txDetails && txDetails.meta && txDetails.meta.postTokenBalances) {
+                var secondToken = ""
+                var slot = 0
+                var wallet = ""
+                var amount = 0
+                var signature = ""
+
                 for (let i = 0; i < txDetails.meta.postTokenBalances.length; i++) {
+
                     const balance = txDetails.meta.postTokenBalances[i];
                     const preBalance = txDetails.meta.preTokenBalances?.[i];
-
+                    if (balance.mint !== tokenAddress) {
+                        secondToken = balance.mint
+                    }
+                    
                     // Ищем покупку токена — это когда баланс увеличивается у получателя токена
                     if (
                         balance.mint === tokenAddress && // Проверяем, что это нужный токен
                         preBalance &&
                         balance.uiTokenAmount.uiAmount > preBalance.uiTokenAmount.uiAmount && // Увеличение баланса
-                        balance.owner === walletTransact
+                        balance.owner === walletTransact &&   // получатель - кошелек породивший транзакцию
+                        amount <= 0
                     ) {
-                        const amount = balance.uiTokenAmount.uiAmount - preBalance.uiTokenAmount.uiAmount;
-                        const wallet = balance.owner || 'Неизвестный кошелек';
-
-                        // Возвращаем информацию о последней покупке токена
-                        return {
-                            slot: txDetails.slot,
-                            wallet,
-                            amount,
-                            signature: txInfo.signature,
-                        };
+                        // Сохраняем информацию о последней покупке токена
+                        amount = balance.uiTokenAmount.uiAmount - preBalance.uiTokenAmount.uiAmount;
+                        wallet = balance.owner;
+                        slot = txDetails.slot
+                        signature = txInfo.signature
                     }
+
+                    if (secondToken !== "" && amount > 0) {  // все что нужно найдено
+                        break;
+                    }
+                    await delay(1000); // Ждём 1 секунду
+                }
+                if (secondToken !== "" && slot && wallet && signature) {
+                    // Возвращаем информацию о последней покупке токена
+                    return {
+                        slot,
+                        wallet,
+                        amount,
+                        signature,
+                    };
                 }
             }
         }
 
-        return null; // Если покупок не найдено
+        return 0; // Если покупок не найдено
     } catch (error) {
         console.error("Ошибка получения транзакции:", error);
-        return null;
+        return null;  // Если ошибка, например Too Many Requests
     }
 }
 
-
-
-
-
-// Функция для получения последней транзакции на покупку токена через Alchemy
-async function getLastTokenTransaction2(tokenAddress) {
-    try {
-        const transactions = await alchemy.transact.getAssetTransfersV2({
-            category: ["spl-token"],
-            order: "desc",
-            limit: 10,
-            contractAddresses: [tokenAddress], // Solana поддерживает этот параметр в V2 API
-        });
-
-        if (!transactions.transfers || transactions.transfers.length === 0) {
-            throw new Error("Нет транзакций для этого токена.");
-        }
-
-        const buyTx = transactions.transfers.find(tx => tx.to !== null);
-        if (!buyTx) {
-            throw new Error("Не найдено покупок токена.");
-        }
-
-        return {
-            slot: buyTx.blockNum,
-            signature: buyTx.hash,
-            wallet: buyTx.from,
-            amount: buyTx.value.toString(),
-        };
-    } catch (error) {
-        console.error("Ошибка получения транзакции:", error.message);
-        return null;
-    }
-}
 
 
 bot.launch().then(() => console.log("✅ Bot is running..."));
