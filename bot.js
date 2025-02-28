@@ -6,7 +6,6 @@ import axios from 'axios';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Alchemy, Network } from "alchemy-sdk";
 // import { alchemyDocs } from '@api/alchemy-docs';
-import fetch from "node-fetch";
 
 // Настройки Alchemy
 const alchemy = new Alchemy({
@@ -38,7 +37,7 @@ bot.on('text', async (ctx) => {
         var lastTransaction = await getLastTokenTransaction(tokenAddress);
 
         if (!lastTransaction) {
-            // Получаем последнюю транзакцию покупки через Alchemy
+            // Получаем последнюю транзакцию покупки через Alchemy - не доделано
             lastTransaction = await getLastTokenTransaction2(tokenAddress);
             
             if (lastTransaction == 0) {
@@ -176,7 +175,7 @@ async function getLastTokenTransaction(tokenAddress) {
     }
 }
 
-async function getLastTokenTransaction2(tokenAddress) {
+async function getLastTokenTransaction2(tokenAddress) { // не доделано
     try {
         const tokenPubKey = new PublicKey(tokenAddress);
 
