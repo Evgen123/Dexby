@@ -38,7 +38,7 @@ bot.on('text', async (ctx) => {
 
         if (!lastTransaction) {
             // Получаем последнюю транзакцию покупки через Alchemy - не доделано
-            lastTransaction = await getLastTokenTransaction2(tokenAddress);
+            // lastTransaction = await getLastTokenTransaction2(tokenAddress);
             
             if (lastTransaction == 0) {
                 return ctx.reply("No purchase transactions found for this token.");              

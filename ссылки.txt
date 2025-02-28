@@ -1,0 +1,11 @@
+
+https://docs.alchemy.com/reference/getsignaturesforaddress
+
+https://docs.alchemy.com/docs/how-to-get-token-metadata
+
+https://solana.com/ru/docs/rpc/http/gettransaction
+
+https://github.com/alchemyplatform/alchemy-sdk-js
+
+https://dashboard.alchemy.com/services/token-api
+
